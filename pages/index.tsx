@@ -1,16 +1,11 @@
-
-/**
- * @copyright (c) 2024 - Present
- * @author github.com/KunalG932
- * @license MIT
- */
-
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Calendar, MapPin, Users, Clock, Ticket } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -35,52 +30,72 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-purple-100">
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-purple-50">
       <Navbar />
       
       {/* Hero Section */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative bg-gradient-to-r from-purple-700 to-indigo-800 text-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="relative overflow-hidden"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-          <div className="text-center">
-            <motion.h1 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200"
-            >
-              Comedy Night Extravaganza 🎭
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-xl md:text-2xl mb-8 text-purple-100"
-            >
-              Join us for an unforgettable night of laughter! ✨
-            </motion.p>
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-800 to-indigo-900 opacity-90" />
+        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-20" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:py-48">
+          <div className="text-center space-y-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              <h1 className="text-4xl md:text-7xl font-bold mb-6 text-white">
+                Comedy Night
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-pink-200">
+                  Extravaganza 🎭
+                </span>
+              </h1>
+              <p className="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto">
+                Join us for an unforgettable night of laughter and entertainment! ✨
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               {session ? (
                 <Link
                   href="/book-tickets"
-                  className="inline-block bg-white text-purple-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-purple-50 hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className={cn(
+                    "group relative inline-flex items-center justify-center px-8 py-4",
+                    "bg-white text-purple-700 rounded-full font-bold text-lg",
+                    "shadow-[0_1px_2px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.1)]",
+                    "hover:shadow-[0_1px_2px_rgba(0,0,0,0.2),0_8px_16px_rgba(0,0,0,0.2)]",
+                    "transform transition-all duration-300 hover:-translate-y-1"
+                  )}
                 >
-                  Book Your Tickets Now 🎟️
+                  <Ticket className="w-5 h-5 mr-2" />
+                  Book Your Tickets Now
+                  <span className="absolute -inset-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-600/20 to-pink-600/20 blur" />
                 </Link>
               ) : (
                 <Link
                   href="/auth/login"
-                  className="inline-block bg-white text-purple-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-purple-50 hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className={cn(
+                    "group relative inline-flex items-center justify-center px-8 py-4",
+                    "bg-white text-purple-700 rounded-full font-bold text-lg",
+                    "shadow-[0_1px_2px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.1)]",
+                    "hover:shadow-[0_1px_2px_rgba(0,0,0,0.2),0_8px_16px_rgba(0,0,0,0.2)]",
+                    "transform transition-all duration-300 hover:-translate-y-1"
+                  )}
                 >
-                  Sign in to Book Tickets 🎫
+                  <Ticket className="w-5 h-5 mr-2" />
+                  Sign in to Book Tickets
+                  <span className="absolute -inset-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-600/20 to-pink-600/20 blur" />
                 </Link>
               )}
             </motion.div>
@@ -89,92 +104,110 @@ export default function Home() {
       </motion.div>
 
       {/* Event Details Section */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Event Details ℹ️</h2>
-            <div className="bg-white rounded-lg shadow-xl p-6 space-y-6 hover:shadow-2xl transition-shadow duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+              <span className="w-8 h-1 bg-purple-600 rounded-full" />
+              Event Details
+            </h2>
+            
+            <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 border border-purple-100">
               <motion.div 
                 whileHover={{ scale: 1.02 }}
-                className="flex items-center space-x-4"
+                className="flex items-start space-x-6"
               >
-                <div className="p-3 bg-purple-100 rounded-full">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+                <div className="p-4 bg-purple-100 rounded-xl">
+                  <Calendar className="w-6 h-6 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Date & Time 📅</h3>
-                  <p className="text-gray-600">Saturday, March 30, 2024 at 7:00 PM</p>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                whileHover={{ scale: 1.02 }}
-                className="flex items-center space-x-4"
-              >
-                <div className="p-3 bg-purple-100 rounded-full">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Venue 📍</h3>
-                  <p className="text-gray-600">Hotel Harmony, Amreli</p>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                whileHover={{ scale: 1.02 }}
-                className="flex items-center space-x-4"
-              >
-                <div className="p-3 bg-purple-100 rounded-full">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Capacity 🎫</h3>
-                  <p className="text-gray-600">
-                    {venueStatus.isFull ? (
-                      <span className="text-red-600">Fully Booked</span>
-                    ) : (
-                      <span>{50 - venueStatus.totalApproved} seats remaining</span>
-                    )}
+                  <h3 className="font-semibold text-gray-900 mb-1">Date & Time</h3>
+                  <p className="text-gray-600">Saturday, March 30, 2024</p>
+                  <p className="text-gray-600 flex items-center gap-1">
+                    <Clock className="w-4 h-4" /> 7:00 PM
                   </p>
                 </div>
               </motion.div>
-            </div>
-          </div>
 
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Location 📍</h2>
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="flex items-start space-x-6"
+              >
+                <div className="p-4 bg-purple-100 rounded-xl">
+                  <MapPin className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Venue</h3>
+                  <p className="text-gray-600">Hotel Harmony</p>
+                  <p className="text-gray-600">Amreli, Gujarat</p>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="flex items-start space-x-6"
+              >
+                <div className="p-4 bg-purple-100 rounded-xl">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Capacity</h3>
+                  {venueStatus.isFull ? (
+                    <p className="text-red-600 font-medium">Fully Booked</p>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-gray-600">
+                        {50 - venueStatus.totalApproved} seats remaining
+                      </p>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${(venueStatus.totalApproved / 50) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+              <span className="w-8 h-1 bg-purple-600 rounded-full" />
+              Location
+            </h2>
+            
             <motion.div 
               whileHover={{ scale: 1.01 }}
-              className="bg-white rounded-lg shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+              className="bg-white rounded-2xl shadow-xl overflow-hidden border border-purple-100"
             >
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.6274104772833!2d70.4557335!3d21.522309299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958018cc8f7f539%3A0x2511ba0a655c03dc!2sHotel%20Harmony!5e0!3m2!1sen!2sin!4v1732020057223!5m2!1sen!2sin"
-                width="100%"
-                height="450"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="hover:opacity-90 transition-opacity duration-300"
-              />
+              <div className="relative pb-[75%] h-0">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.6274104772833!2d70.4557335!3d21.522309299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958018cc8f7f539%3A0x2511ba0a655c03dc!2sHotel%20Harmony!5e0!3m2!1sen!2sin!4v1732020057223!5m2!1sen!2sin"
+                  className="absolute top-0 left-0 w-full h-full border-0 hover:opacity-90 transition-opacity duration-300"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
 
       <Footer />
     </div>
   );
-} 
+}
+
