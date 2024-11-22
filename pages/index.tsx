@@ -1,288 +1,180 @@
-"use client"
 
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Calendar, MapPin, Users, Clock, Ticket, Star } from 'lucide-react'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+/**
+ * @copyright (c) 2024 - Present
+ * @author github.com/KunalG932
+ * @license MIT
+ */
+
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function Home() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   const [venueStatus, setVenueStatus] = useState<{
-    totalApproved: number
-    isFull: boolean
-  }>({ totalApproved: 0, isFull: false })
-  const [activeTooltip, setActiveTooltip] = useState<string | null>(null)
-
-  const { scrollYProgress } = useScroll()
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95])
+    totalApproved: number;
+    isFull: boolean;
+  }>({ totalApproved: 0, isFull: false });
 
   useEffect(() => {
     const fetchVenueStatus = async () => {
       try {
-        const res = await fetch('/api/bookings/venue-status')
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.message)
-        setVenueStatus(data)
+        const res = await fetch('/api/bookings/venue-status');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        setVenueStatus(data);
       } catch (err) {
-        console.error('Failed to fetch venue status:', err)
+        console.error('Failed to fetch venue status:', err);
       }
-    }
+    };
 
-    fetchVenueStatus()
-  }, [])
+    fetchVenueStatus();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 via-purple-100 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-purple-100">
       <Navbar />
       
-      {/* Hero Section with Parallax Effect */}
+      {/* Hero Section */}
       <motion.div 
-        style={{ opacity, scale }}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative bg-gradient-to-r from-purple-700 to-indigo-800 text-white"
       >
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900"
-        />
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="space-y-8"
-          >
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-              <span className="block bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">
-                Comedy Night
-              </span>
-              <span className="block text-white mt-2">
-                Extravaganza 🎭
-              </span>
-            </h1>
-            
-            <p className="max-w-2xl mx-auto text-xl md:text-2xl text-purple-200">
-              Get ready for an evening filled with non-stop laughter, unforgettable moments, and pure entertainment! ✨
-            </p>
-
-            <motion.div
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+          <div className="text-center">
+            <motion.h1 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200"
+            >
+              Comedy Night Extravaganza 🎭
+            </motion.h1>
+            <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl md:text-2xl mb-8 text-purple-100"
+            >
+              Join us for an unforgettable night of laughter! ✨
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               {session ? (
-                <Link 
+                <Link
                   href="/book-tickets"
-                  className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg bg-white text-purple-900 hover:bg-purple-50 hover:scale-105 transform transition-all duration-300"
+                  className="inline-block bg-white text-purple-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-purple-50 hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Book Your Tickets Now 🎟️
                 </Link>
               ) : (
-                <Link 
+                <Link
                   href="/auth/login"
-                  className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg bg-white text-purple-900 hover:bg-purple-50 hover:scale-105 transform transition-all duration-300"
+                  className="inline-block bg-white text-purple-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-purple-50 hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Sign in to Book Tickets 🎫
                 </Link>
               )}
-              
-              <Link 
-                href="#details"
-                className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg border-2 border-white text-white hover:bg-white/10 transition-colors duration-300"
-              >
-                Learn More
-              </Link>
             </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Animated background particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute size-2 bg-white rounded-full"
-              initial={{
-                opacity: Math.random() * 0.5 + 0.3,
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-              }}
-              animate={{
-                y: [null, Math.random() * -500],
-                opacity: [null, 0],
-              }}
-              transition={{
-                duration: Math.random() * 5 + 5,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          ))}
+          </div>
         </div>
       </motion.div>
 
       {/* Event Details Section */}
-      <section id="details" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-gray-900">Event Details ℹ️</h2>
-            <p className="mt-4 text-xl text-gray-600">Everything you need to know about the biggest comedy night of the year</p>
-          </motion.div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Event Details ℹ️</h2>
+            <div className="bg-white rounded-lg shadow-xl p-6 space-y-6 hover:shadow-2xl transition-shadow duration-300">
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center space-x-4"
+              >
+                <div className="p-3 bg-purple-100 rounded-full">
+                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Date & Time 📅</h3>
+                  <p className="text-gray-600">Saturday, March 30, 2024 at 7:00 PM</p>
+                </div>
+              </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              {[
-                {
-                  icon: Calendar,
-                  title: "Date",
-                  info: "Saturday, March 30, 2024",
-                  tooltip: "Mark your calendar!"
-                },
-                {
-                  icon: Clock,
-                  title: "Time",
-                  info: "7:00 PM",
-                  tooltip: "Doors open at 6:30 PM"
-                },
-                {
-                  icon: MapPin,
-                  title: "Venue",
-                  info: "Hotel Harmony, Amreli",
-                  tooltip: "Easy parking available"
-                },
-                {
-                  icon: Users,
-                  title: "Capacity",
-                  info: venueStatus.isFull 
-                    ? "Fully Booked" 
-                    : `${50 - venueStatus.totalApproved} seats remaining`,
-                  tooltip: "Book early to avoid disappointment"
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <div 
-                    className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                    onMouseEnter={() => setActiveTooltip(item.title)}
-                    onMouseLeave={() => setActiveTooltip(null)}
-                  >
-                    <div className="p-6">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 bg-purple-100 rounded-full">
-                          <item.icon className="size-6 text-purple-600" />
-                        </div>
-                        <div className="text-left">
-                          <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                          <p className={`text-lg ${item.title === 'Capacity' && venueStatus.isFull ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
-                            {item.info}
-                          </p>
-                        </div>
-                      </div>
-                      {activeTooltip === item.title && (
-                        <div className="absolute z-10 px-3 py-2 text-sm text-white bg-gray-900 rounded-md -top-8 left-1/2 transform -translate-x-1/2">
-                          {item.tooltip}
-                          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center space-x-4"
+              >
+                <div className="p-3 bg-purple-100 rounded-full">
+                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Venue 📍</h3>
+                  <p className="text-gray-600">Hotel Harmony, Amreli</p>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center space-x-4"
+              >
+                <div className="p-3 bg-purple-100 rounded-full">
+                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Capacity 🎫</h3>
+                  <p className="text-gray-600">
+                    {venueStatus.isFull ? (
+                      <span className="text-red-600">Fully Booked</span>
+                    ) : (
+                      <span>{50 - venueStatus.totalApproved} seats remaining</span>
+                    )}
+                  </p>
+                </div>
+              </motion.div>
             </div>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="relative"
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Location 📍</h2>
+            <motion.div 
+              whileHover={{ scale: 1.01 }}
+              className="bg-white rounded-lg shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300"
             >
-              <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.6274104772833!2d70.4557335!3d21.522309299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958018cc8f7f539%3A0x2511ba0a655c03dc!2sHotel%20Harmony!5e0!3m2!1sen!2sin!4v1732020057223!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0, minHeight: "500px" }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="hover:opacity-90 transition-opacity duration-300"
-                />
-              </div>
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.6274104772833!2d70.4557335!3d21.522309299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958018cc8f7f539%3A0x2511ba0a655c03dc!2sHotel%20Harmony!5e0!3m2!1sen!2sin!4v1732020057223!5m2!1sen!2sin"
+                width="100%"
+                height="450"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="hover:opacity-90 transition-opacity duration-300"
+              />
             </motion.div>
           </div>
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-24 bg-gradient-to-b from-white to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-gray-900">What to Expect 🎉</h2>
-            <p className="mt-4 text-xl text-gray-600">An evening packed with entertainment and surprises</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Star,
-                title: "Top Comedians",
-                description: "Featuring the best comedy talent from across the country"
-              },
-              {
-                icon: Ticket,
-                title: "VIP Experience",
-                description: "Premium seating with complimentary refreshments"
-              },
-              {
-                icon: Users,
-                title: "Meet & Greet",
-                description: "Exclusive opportunity to meet the performers"
-              }
-            ].map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
-              >
-                <div className="bg-white rounded-lg shadow-md p-6 text-center h-full">
-                  <feature.icon className="size-12 mx-auto mb-4 text-purple-600" />
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      </motion.div>
 
       <Footer />
     </div>
-  )
-}
-
+  );
+} 
