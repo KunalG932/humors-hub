@@ -7,14 +7,6 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { Calendar, MapPin, Users, Clock, Ticket, Star } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 export default function Home() {
   const { data: session } = useSession()
@@ -22,6 +14,7 @@ export default function Home() {
     totalApproved: number
     isFull: boolean
   }>({ totalApproved: 0, isFull: false })
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null)
 
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
@@ -85,37 +78,27 @@ export default function Home() {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               {session ? (
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-white text-purple-900 hover:bg-purple-50 hover:scale-105 transform transition-all duration-300"
+                <Link 
+                  href="/book-tickets"
+                  className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg bg-white text-purple-900 hover:bg-purple-50 hover:scale-105 transform transition-all duration-300"
                 >
-                  <Link href="/book-tickets">
-                    Book Your Tickets Now 🎟️
-                  </Link>
-                </Button>
+                  Book Your Tickets Now 🎟️
+                </Link>
               ) : (
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-white text-purple-900 hover:bg-purple-50 hover:scale-105 transform transition-all duration-300"
+                <Link 
+                  href="/auth/login"
+                  className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg bg-white text-purple-900 hover:bg-purple-50 hover:scale-105 transform transition-all duration-300"
                 >
-                  <Link href="/auth/login">
-                    Sign in to Book Tickets 🎫
-                  </Link>
-                </Button>
+                  Sign in to Book Tickets 🎫
+                </Link>
               )}
               
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white/10"
-                asChild
+              <Link 
+                href="#details"
+                className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg border-2 border-white text-white hover:bg-white/10 transition-colors duration-300"
               >
-                <Link href="#details">
-                  Learn More
-                </Link>
-              </Button>
+                Learn More
+              </Link>
             </motion.div>
           </motion.div>
         </div>
@@ -161,67 +144,68 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-8">
-              <TooltipProvider>
-                {[
-                  {
-                    icon: Calendar,
-                    title: "Date",
-                    info: "Saturday, March 30, 2024",
-                    tooltip: "Mark your calendar!"
-                  },
-                  {
-                    icon: Clock,
-                    title: "Time",
-                    info: "7:00 PM",
-                    tooltip: "Doors open at 6:30 PM"
-                  },
-                  {
-                    icon: MapPin,
-                    title: "Venue",
-                    info: "Hotel Harmony, Amreli",
-                    tooltip: "Easy parking available"
-                  },
-                  {
-                    icon: Users,
-                    title: "Capacity",
-                    info: venueStatus.isFull 
-                      ? "Fully Booked" 
-                      : `${50 - venueStatus.totalApproved} seats remaining`,
-                    tooltip: "Book early to avoid disappointment"
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
+              {[
+                {
+                  icon: Calendar,
+                  title: "Date",
+                  info: "Saturday, March 30, 2024",
+                  tooltip: "Mark your calendar!"
+                },
+                {
+                  icon: Clock,
+                  title: "Time",
+                  info: "7:00 PM",
+                  tooltip: "Doors open at 6:30 PM"
+                },
+                {
+                  icon: MapPin,
+                  title: "Venue",
+                  info: "Hotel Harmony, Amreli",
+                  tooltip: "Easy parking available"
+                },
+                {
+                  icon: Users,
+                  title: "Capacity",
+                  info: venueStatus.isFull 
+                    ? "Fully Booked" 
+                    : `${50 - venueStatus.totalApproved} seats remaining`,
+                  tooltip: "Book early to avoid disappointment"
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div 
+                    className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    onMouseEnter={() => setActiveTooltip(item.title)}
+                    onMouseLeave={() => setActiveTooltip(null)}
                   >
-                    <Card>
-                      <CardContent className="p-6">
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div className="flex items-center gap-4">
-                              <div className="p-3 bg-purple-100 rounded-full">
-                                <item.icon className="size-6 text-purple-600" />
-                              </div>
-                              <div className="text-left">
-                                <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                                <p className={`text-lg ${item.title === 'Capacity' && venueStatus.isFull ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
-                                  {item.info}
-                                </p>
-                              </div>
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{item.tooltip}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </TooltipProvider>
+                    <div className="p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-purple-100 rounded-full">
+                          <item.icon className="size-6 text-purple-600" />
+                        </div>
+                        <div className="text-left">
+                          <h3 className="font-semibold text-gray-900">{item.title}</h3>
+                          <p className={`text-lg ${item.title === 'Capacity' && venueStatus.isFull ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
+                            {item.info}
+                          </p>
+                        </div>
+                      </div>
+                      {activeTooltip === item.title && (
+                        <div className="absolute z-10 px-3 py-2 text-sm text-white bg-gray-900 rounded-md -top-8 left-1/2 transform -translate-x-1/2">
+                          {item.tooltip}
+                          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
 
             <motion.div
@@ -230,20 +214,18 @@ export default function Home() {
               viewport={{ once: true }}
               className="relative"
             >
-              <Card className="overflow-hidden h-full">
-                <CardContent className="p-0">
-                  <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.6274104772833!2d70.4557335!3d21.522309299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958018cc8f7f539%3A0x2511ba0a655c03dc!2sHotel%20Harmony!5e0!3m2!1sen!2sin!4v1732020057223!5m2!1sen!2sin"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0, minHeight: "500px" }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="hover:opacity-90 transition-opacity duration-300"
-                  />
-                </CardContent>
-              </Card>
+              <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.6274104772833!2d70.4557335!3d21.522309299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958018cc8f7f539%3A0x2511ba0a655c03dc!2sHotel%20Harmony!5e0!3m2!1sen!2sin!4v1732020057223!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, minHeight: "500px" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="hover:opacity-90 transition-opacity duration-300"
+                />
+              </div>
             </motion.div>
           </div>
         </div>
@@ -288,13 +270,11 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
               >
-                <Card className="h-full">
-                  <CardContent className="p-6 text-center">
-                    <feature.icon className="size-12 mx-auto mb-4 text-purple-600" />
-                    <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                <div className="bg-white rounded-lg shadow-md p-6 text-center h-full">
+                  <feature.icon className="size-12 mx-auto mb-4 text-purple-600" />
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
